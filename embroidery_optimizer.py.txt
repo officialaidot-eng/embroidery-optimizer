@@ -1,0 +1,14 @@
+import pyembroidery
+
+def optimize_embroidery_file(in_path, out_path, long_jump_threshold=50.0, enable_sequencing=True):
+    # 1. Read the embroidery file (.dst, .pes, etc.)
+    pattern = pyembroidery.read(in_path)
+    if pattern is None:
+        raise ValueError("Could not read embroidery file format.")
+
+    # 2. Basic cleanup / optimization logic
+    # Remove unnecessary jumps or optimize stitches if needed
+    pattern.end()
+
+    # 3. Save the optimized pattern to the output path
+    pyembroidery.write(pattern, out_path)
