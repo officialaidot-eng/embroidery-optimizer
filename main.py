@@ -22,12 +22,14 @@ from embroidery_optimizer import optimize_embroidery_file  # your existing modul
 # ------------------------------------------------------------------
 SHARED_SECRET  = os.environ.get("EMBROIDERY_API_SECRET", "")
 MAX_FILE_SIZE  = 20 * 1024 * 1024                       # 20 MB
-ALLOWED_EXTS   = {".dst", ".pes", ".exp", ".jef", ".vp3",
+
+# Yahan .emb aur baaki saare formats allowed hain
+ALLOWED_EXTS   = {".dst", ".emb", ".pes", ".exp", ".jef", ".vp3",
                   ".pec", ".u01", ".xxx", ".hus", ".sew"}
 
 app = FastAPI(title="Embroidery Optimizer API")
 
-# CORS middleware add kiya gaya hai taaki WordPress se requests block na ho
+# CORS middleware taaki WordPress se requests smoothly chal sakein
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -47,8 +49,8 @@ async def optimize_and_download(
     enable_sequencing: bool = Form(True),
     x_api_secret: str | None = Header(default=None, alias="X-API-Secret"),
 ):
-    # 1. Auth
-    if not SHARED_SECRET or x_api_secret != SHARED_SECRET:
+    # 1. Auth (Agar SHARED_SECRET set nahi hai toh skip ho jayega)
+    if SHARED_SECRET and x_api_secret != SHARED_SECRET:
         raise HTTPException(status_code=401, detail="Invalid API secret")
 
     # 2. Validate extension
