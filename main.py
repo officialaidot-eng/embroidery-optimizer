@@ -13,6 +13,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.responses import Response
+from fastapi.middleware.cors import CORSMiddleware
 
 from embroidery_optimizer import optimize_embroidery_file  # your existing module
 
@@ -25,6 +26,15 @@ ALLOWED_EXTS   = {".dst", ".pes", ".exp", ".jef", ".vp3",
                   ".pec", ".u01", ".xxx", ".hus", ".sew"}
 
 app = FastAPI(title="Embroidery Optimizer API")
+
+# CORS middleware add kiya gaya hai taaki WordPress se requests block na ho
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # ------------------------------------------------------------------
